@@ -1,0 +1,75 @@
+const express = require("express");
+const cors = require("cors");
+
+const app = express();
+
+// Origenes permitidos: en desarrollo localhost:5173 (Vite),
+// en produccion la(s) URL(s) de Vercel definidas en la variable CLIENTE_URL (Render).
+const orignesPermitidos = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  ...(process.env.CLIENTE_URL || "")
+    .split(",")
+    .map((u) => u.trim())
+    .filter(Boolean),
+];
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      // Sin origin (curl, Postman, navegadores en ciertos casos) se permite
+      if (!origin || orignesPermitidos.includes(origin)) return callback(null, true);
+      callback(new Error("Origen no permitido por CORS"));
+    },
+  })
+);
+app.use(express.json());
+
+// Datos en memoria (luego los cambias por una base de datos)
+let tareas = [
+  { id: 1, titulo: "Aprender React", completada: false },
+  { id: 2, titulo: "Conectar con Node.js", completada: false },
+];
+let siguienteId = 3;
+
+// GET - health check (util para comprobar que el servicio esta vivo en Render)
+app.get("/", (req, res) => {
+  res.json({ servicio: "tareas-api", estado: "ok" });
+});
+
+// GET - Obtener todas las tareas
+app.get("/api/tareas", (req, res) => {
+  res.json(tareas);
+});
+
+// POST - Crear una tarea
+app.post("/api/tareas", (req, res) => {
+  const { titulo } = req.body;
+  if (!titulo || !titulo.trim()) {
+    return res.status(400).json({ error: "El titulo es obligatorio" });
+  }
+  const nueva = { id: siguienteId++, titulo: titulo.trim(), completada: false };
+  tareas.push(nueva);
+  res.status(201).json(nueva);
+});
+
+// PUT - Marcar/desmarcar como completada
+app.put("/api/tareas/:id", (req, res) => {
+  const tarea = tareas.find((t) => t.id === Number(req.params.id));
+  if (!tarea) return res.status(404).json({ error: "Tarea no encontrada" });
+  tarea.completada = req.body.completada ?? !tarea.completada;
+  res.json(tarea);
+});
+
+// DELETE - Eliminar una tarea
+app.delete("/api/tareas/:id", (req, res) => {
+  const existe = tareas.some((t) => t.id === Number(req.params.id));
+  if (!existe) return res.status(404).json({ error: "Tarea no encontrada" });
+  tareas = tareas.filter((t) => t.id !== Number(req.params.id));
+  res.status(204).send();
+});
+
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`API corriendo en http://localhost:${PORT}`);
+});
