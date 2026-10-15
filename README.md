@@ -11,8 +11,8 @@ Cumple con la Guía 8 (plan de acción) y la rúbrica de *Investigación y Proto
 
 ## 🌐 URLs en vivo
 
-- **Frontend (Vercel):** `https://tareas-app.vercel.app`
-- **API (Render):** `https://tareas-api.onrender.com/api/tareas`
+- **Frontend (Vercel):** https://tareas-app-one.vercel.app
+- **API (Render):** https://tareas-api-5mxe.onrender.com/api/tareas
 
 ## 📁 Estructura del proyecto
 
@@ -84,7 +84,8 @@ curl -X DELETE http://localhost:3001/api/tareas/1
    | Start Command | `node index.js` |
    | Instance Type | Free |
 3. Environment:
-   - `CLIENTE_URL` = `https://tareas-app.vercel.app` (restringe CORS al frontend real).
+   - `CLIENTE_URL` = `https://tareas-app-one.vercel.app` (restringe CORS al frontend real).
+4. URL resultante: `https://tareas-api-5mxe.onrender.com`
 
 ### Frontend — Vercel
 1. **Add New → Project** → importar el repositorio.
@@ -94,8 +95,8 @@ curl -X DELETE http://localhost:3001/api/tareas/1
    |-------|-------|
    | Build Command | `npm run build` |
    | Output Directory | `dist` |
-   | Env var `VITE_API_URL` | `https://tareas-api.onrender.com/api/tareas` |
-3. Deploy → `https://tareas-app.vercel.app`
+   | Env var `VITE_API_URL` | `https://tareas-api-5mxe.onrender.com/api/tareas` |
+3. Deploy → `https://tareas-app-one.vercel.app`
 
 ## 🔐 Buenas prácticas aplicadas
 

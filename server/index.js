@@ -17,9 +17,10 @@ const orignesPermitidos = [
 app.use(
   cors({
     origin(origin, callback) {
-      // Sin origin (curl, Postman, navegadores en ciertos casos) se permite
+      // Sin origin (curl, Postman, mismo origen) se permite;
+      // un origen no listado recibe la respuesta SIN cabecera CORS (el navegador la bloquea).
       if (!origin || orignesPermitidos.includes(origin)) return callback(null, true);
-      callback(new Error("Origen no permitido por CORS"));
+      callback(null, false);
     },
   })
 );
